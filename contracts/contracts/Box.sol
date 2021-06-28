@@ -4,7 +4,7 @@ contract Box {
     // store a value
     // retrieve a value
 
-    uint256 value;
+    uint256 value = 1;
 
     function storeValue(uint256 newValue) public {
         value = newValue;

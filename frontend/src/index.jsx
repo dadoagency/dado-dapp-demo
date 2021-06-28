@@ -1,24 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
-import { BoxContractProvider, useBoxContract } from './providers/BoxContractProvider'
+import App from './App'
+import { BoxContractProvider } from './providers/BoxContractProvider'
 
-/* Add JavaScript code here! */
-console.log("Hello World! You did it! Welcome to Snowpack :D");
-
-function App() {
-  const [value, setValue] = useState()
-  const { retrieveValue } = useBoxContract()
-
-  async function onRetrieveValue() {
-    const res = await retrieveValue();
-    setValue(res);
-  }
-
-  return (<div>
-    <button onClick={onRetrieveValue}>Retrieve value</button> (value is here:) {value}
-  </div>)
-}
 
 ReactDOM.render(
   <BoxContractProvider>

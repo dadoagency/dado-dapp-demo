@@ -48,6 +48,17 @@ Links to refer to:
 
 ## 2. Frontend: React UI
 
-2.1 Follow https://www.snowpack.dev/tutorials/react
+2.1 Follow https://www.snowpack.dev/tutorials/react and setup React with Snowpack so you can run `npm start`.
 
-2.2 Write `frontend/providers/EthereumProvider.js`.
+2.2 Add the `npm i ethers` dependency.
+
+2.3 Add `frontend/ethereum.js` and implement `requestSigner()`.
+
+2.4 Write `frontend/providers/BoxContractProvider.js` and implement `connectWallet()`, which calls `requestSigner`, and expose wrapped versions of the contract's `storeValue()`, and `retrieveValue()` functions.
+  - The provider should keep as state `signer` and `contract` and set these in `connectWallet()`.
+
+2.5 These functions need access to an initialised contract (as a state variable). Import `Box` from `artifacts/...` after you mount `../contracts/artifacts` at `artifacts` in the snowpack config.
+
+2.6 In `frontend/index.js`, wrap `<App />` in the `<BoxContractProvider>`.
+
+2.7 Export the App component from `frontend/App.jsx`. Then write the app. Include a "Connect Wallet" button whose `onClick` triggers `walletConnect` from `useBoxContract()`. When there is a `signer`, show a button to retrieve the value and an input plus button to store the value.

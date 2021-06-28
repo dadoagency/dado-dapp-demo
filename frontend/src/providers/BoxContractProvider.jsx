@@ -1,32 +1,42 @@
 import React, { createContext, useContext, useState } from 'react';
-
 import { ethers } from 'ethers'
+
+import { requestSigner } from '../ethereum';
+
+import BoxContract from "/artifacts/contracts/Box.sol/Box.json"
 
 const BoxContext = createContext();
 
+const CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+
 export function BoxContractProvider({ children }) {
   const [signer, setSigner] = useState()
+  const [contract, setContract] = useState()
 
-  function connectWallet() {
+  // TODO Workshop 4: useEffect( check if the wallet has already been connected and if so run connectWallet)
+
+  async function connectWallet() {
+    const requestedSigner = await requestSigner()
     // TODO: Connect to wallet by requesting the user's account
-    // setSigner(requestAccount())
+    setSigner(requestedSigner)
+
     // TODO: Initialise the contract
-    // setContract(new ethers.Contract(CONTRACT_ADDRESS, BoxContract.abi, signer))
+    const deployedBoxContract = new ethers.Contract(CONTRACT_ADDRESS, BoxContract.abi, requestedSigner)
+    console.log("deployedBoxContract", deployedBoxContract)
+    setContract(deployedBoxContract)
   }
 
-  const contract = new ethers.Contract(CONTRACT_ADDRESS, BoxContract.abi, signer)
-
-  function storeValue() {
-    console.log("TODO: storeValue")
-    contract.storeValue()
+  async function storeValue(value) {
+    console.log("storeValue(): ", await contract.storeValue(value))
   }
 
-  function retrieveValue() {
-    console.log("TODO: retrieveValue")
-    return contract.retrieveValue()
+  async function retrieveValue() {
+    const value = await contract.retrieveValue()
+    console.log("retrieveValue(): ", value)
+    return value
   }
 
-  return (<BoxContext.Provider value={{ signer, storeValue, retrieveValue }}>
+  return (<BoxContext.Provider value={{ connectWallet, signer, storeValue, retrieveValue }}>
     {children}
   </BoxContext.Provider>)
 }

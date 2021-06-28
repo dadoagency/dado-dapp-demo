@@ -2,7 +2,8 @@
 export default {
   mount: {
     src: "/dist",
-    public: "/"
+    public: "/",
+    "../contracts/artifacts": "/artifacts"
   },
   plugins: [
     "@snowpack/plugin-react-refresh"
