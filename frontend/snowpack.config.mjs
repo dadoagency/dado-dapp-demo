@@ -2,11 +2,10 @@
 export default {
   mount: {
     src: "/dist",
-    public: "/"
+    public: "/",
+    "../contracts/artifacts": "/artifacts",
   },
-  plugins: [
-    "@snowpack/plugin-react-refresh"
-  ],
+  plugins: ["@snowpack/plugin-react-refresh"],
   routes: [
     /* Enable an SPA Fallback in development: */
     // {"match": "routes", "src": ".*", "dest": "/index.html"},
