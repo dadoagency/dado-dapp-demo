@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import {
-  BoxContractProvider,
-  useBoxContract,
-} from "./providers/BoxContractProvider";
+import { ContractProvider, useContract } from "./providers/BoxContractProvider";
 
 function App() {
   const [fetchedValue, setFetchedValue] = useState();
-  const { retrieveValue, connectWallet, signer, chainId } = useBoxContract();
+  const { boxContract, signer, chainId } = useContract();
 
   async function onRetrieveValue() {
-    const res = await retrieveValue();
+    const res = await boxContract.retrieveValue();
     console.log("res!", res);
     setFetchedValue(res.toString());
   }
@@ -33,7 +30,7 @@ function App() {
 }
 
 function StoreValueForm() {
-  const { storeValue } = useBoxContract();
+  const { boxContract } = useContract();
   const [newValue, setNewValue] = useState("");
 
   function onNewValueFormSubmit(e) {
@@ -41,7 +38,7 @@ function StoreValueForm() {
     console.log("e.target", e.target);
 
     console.log("about to invoke storeValue!");
-    const res = storeValue(newValue);
+    const res = boxContract.storeValue(newValue);
   }
 
   function onNewValueChange(e) {
@@ -63,7 +60,7 @@ function StoreValueForm() {
 }
 
 function ConnectWallet() {
-  const { connectWallet, signer } = useBoxContract();
+  const { connectWallet, signer } = useContract();
 
   async function onConnectWalletClick() {
     await connectWallet();
@@ -81,9 +78,9 @@ function ConnectWallet() {
 }
 
 ReactDOM.render(
-  <BoxContractProvider>
+  <ContractProvider>
     <App />
-  </BoxContractProvider>,
+  </ContractProvider>,
   document.getElementById("root")
 );
 
