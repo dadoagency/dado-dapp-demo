@@ -9,7 +9,7 @@ const ContractContext = createContext();
 
 const BOX_CONTRACT_ADDRESS = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
-export function ContractProvider({ contracts, children }) {
+export function ContractsProvider({ contracts, children }) {
   const { connectedSigner, connectSigner } = useConnectedSigner();
   const { boxContract, connectBoxContract } = useBoxContract();
   const chainId = useChainId();
@@ -67,11 +67,11 @@ function useBoxContract() {
 }
 
 function useConnectedSigner() {
-  const [connectedSigner, setConnectedSigner] = useState();
+  const [connectedSigner, setConnectedAccounts] = useState();
 
   async function connectSigner() {
     const signer = await requestAccount();
-    setConnectedSigner(signer);
+    setConnectedAccounts(signer);
   }
 
   return { connectedSigner, connectSigner };
@@ -81,39 +81,28 @@ function useChainId() {
   const [chainId, setChainId] = useState();
 
   useEffect(() => {
-    async function initialiseChainId() {
-      const newChainId = await ethereum.request({
-        method: "eth_chainId",
-      });
+    function onChainChanged(newChainId) {
       setChainId(newChainId);
-
-      ethereum.on("chainChanged", (newChainId) => {
-        // Handle the new chain.
-        // Correctly handling chain changes can be complicated.
-        // We recommend reloading the page unless you have good reason not to.
-        setChainId(newChainId);
-      });
     }
 
-    initialiseChainId();
+    window.ethereum
+      .request({
+        method: "eth_chainId",
+      })
+      .then(onChainChanged);
+
+    window.ethereum.on("chainChanged", onChainChanged);
 
     return () => {
       // cleanup function: remove listener
+      window.ethereum.off("chainChanged", onChainChanged);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (chainId != null) {
-  //     console.log("chainId updated!", chainId);
-  //   }
-
-  //   // alert("chainId is", chainId);
-  // }, [chainId]);
 
   return chainId;
 }
 
-export function useContract() {
+export function useContracts() {
   const context = useContext(ContractContext);
 
   if (context === undefined) {

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 
-import { ContractProvider, useContract } from "./providers/BoxContractProvider";
+import {
+  ContractsProvider,
+  useContracts,
+} from "./providers/BoxContractProvider";
 
 function App() {
   const [fetchedValue, setFetchedValue] = useState();
-  const { boxContract, signer, chainId } = useContract();
+  const { boxContract, signer, chainId } = useContracts();
 
   async function onRetrieveValue() {
     const res = await boxContract.retrieveValue();
@@ -23,14 +26,13 @@ function App() {
       <hr />
       <button onClick={onRetrieveValue}>Retrieve fetchedValue</button>{" "}
       (fetchedValue is here:) {fetchedValue}
-      <img src={fetchedValue} />
       <StoreValueForm />
     </div>
   );
 }
 
 function StoreValueForm() {
-  const { boxContract } = useContract();
+  const { boxContract } = useContracts();
   const [newValue, setNewValue] = useState("");
 
   function onNewValueFormSubmit(e) {
@@ -60,7 +62,7 @@ function StoreValueForm() {
 }
 
 function ConnectWallet() {
-  const { connectWallet, signer } = useContract();
+  const { connectWallet, signer } = useContracts();
 
   async function onConnectWalletClick() {
     await connectWallet();
@@ -78,9 +80,9 @@ function ConnectWallet() {
 }
 
 ReactDOM.render(
-  <ContractProvider>
+  <ContractsProvider>
     <App />
-  </ContractProvider>,
+  </ContractsProvider>,
   document.getElementById("root")
 );
 
